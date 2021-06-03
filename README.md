@@ -23,6 +23,29 @@ This is a benchmark comparing FFTSSharp against Intel's MKL C# implementation (h
 | 16384 | 46817ns       | 89313ns       |
 | 32767 | 90406ns       | 188335ns      |
 
+# Usage
+* Include the library
+```cs
+using FFTSSharp;
+```
+* Create an instance of FFTS (think of it like creating a plan)
+```cs
+var ffts = FFTS.real(FFTS.FORWARD, 16);
+```
+* Declare the input and output array (length of the input and output must be known beforehand)
+```cs
+float[] input = new float[16];
+float[] output = new float[18];
+```
+* Compute the result
+```cs
+ffts.execute(input, output);
+```
+* Free the plan
+```cs
+ffts.free();
+```
+
 # Current problems
 * For now, only 1D real and complex, forward and inverse tranforms are supported. FFTS support for 2D and above is insufficiently documented and is incomplete.
 
