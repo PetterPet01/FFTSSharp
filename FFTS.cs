@@ -6,7 +6,7 @@ using System.Reflection;
 namespace FFTSSharp
 {
 	using static FFTSManager;
-	public unsafe class FFTS
+	public class FFTS
 	{
 		/**
 		 * C pointer
@@ -134,7 +134,7 @@ namespace FFTSSharp
 		 * @param src
 		 * @param dst
 		 */
-		public unsafe void execute(float[] src, float[] dst)
+		public void execute(float[] src, float[] dst)
 		{
 			int srcLen = src.Length;
 			int dstLen = dst.Length;
@@ -280,7 +280,7 @@ namespace FFTSSharp
 		}
 	}
 	[SuppressUnmanagedCodeSecurity]
-	public unsafe interface FFTSNative
+	public interface FFTSNative
 	{
 		[DllImportX("ffts", CallingConvention = CallingConvention.Cdecl,
 			 ExactSpelling = true, SetLastError = false)]
