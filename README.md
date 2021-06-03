@@ -1,6 +1,6 @@
 # FFTSSharp
 C# wrapper for FFTS (South)
-A fast C# wrapper for FFTS (Fastest Fourier Transform in the South). The dynamically linked libraries (DLLs) used for the wrapper are custom built with CMake and should work normally for Windows users. The DLLs are included in the package.
+A fast C# wrapper for FFTS (Fastest Fourier Transform in the South). The dynamically linked libraries (DLLs) used for the wrapper are custom built with CMake and should work normally for Windows users. The DLLs are included in the package and the folder "ffts-dlls" is to be put at the application's startup path.
 
 # Features
 * Full support over all 3 types of SSE (SSE1, SSE2, SSE3) and even without SSE (nonSSE). A built-in SSE availability detector takes care of this.
