@@ -1,6 +1,7 @@
 # FFTSSharp
-C# wrapper for FFTS (South)
-A fast C# wrapper for FFTS (Fastest Fourier Transform in the South). The dynamically linked libraries (DLLs) used for the wrapper are custom built with CMake and should work normally for Windows users. The DLLs are included in the package and the folder "ffts-dlls" is to be put at the application's startup path.
+A basic C# wrapper for FFTS (Fastest Fourier Transform in the South).
+
+The dynamically linked libraries (DLLs) used for the wrapper are custom built with CMake and should work normally for Windows users. The DLLs are included in the package and the folder "ffts-dlls" is to be put at the application's startup path.
 
 # Features
 * Full support over all 3 types of SSE (SSE1, SSE2, SSE3) and even without SSE (nonSSE). A built-in SSE availability detector takes care of this.
@@ -13,9 +14,9 @@ This is a benchmark comparing FFTSSharp against Intel's MKL C# implementation (h
 
 Tests on sizes of power of 2. Transforms are ran 100000 times and the results are averaged out.
 
-The benchmark is carried out on i7-2640M CPU (benchmark code will be included soon).
+The benchmark is carried out on i7-2640M CPU; SSE3 for FFTSSharp.
 
-
+(Benchmark code will be included soon)
 |Length | FFTSSharp     | MKL           |
 |:-----:|:-------------:|:-------------:|
 | 256   | 356ns         | 376ns         |
@@ -32,6 +33,12 @@ The benchmark is carried out on i7-2640M CPU (benchmark code will be included so
 ```cs
 using FFTSSharp;
 ```
+* Initial loading of FFTS DLLs
+```cs
+FFTSManager.loadAppropriateDll(FFTSManager.InstructionType.Auto);
+```
+There consists of 4 enums in FFTSManager.InstructionType: nonSSE, SSE, SSE2, SSE3, Auto\
+[Choose "Auto" for generic loading]
 * Create an instance of FFTS (think of it like creating a plan)
 ```cs
 var ffts = FFTS.real(FFTS.FORWARD, 16);
