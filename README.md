@@ -9,7 +9,11 @@ A fast C# wrapper for FFTS (Fastest Fourier Transform in the South). The dynamic
 * (Coming soon) Test programs for basic usage and benchmark code
 
 # Benchmark
-This is a benchmark comparing FFTSSharp against Intel's MKL C# implementation (https://software.intel.com/content/www/us/en/develop/articles/using-intel-mkl-in-your-c-program.html). Tests on sizes of power of 2. Transforms are ran 100000 times and the results are averaged out. The benchmark is carried out on i7-2640M CPU (benchmark code will be included soon).
+This is a benchmark comparing FFTSSharp against Intel's MKL C# implementation (https://software.intel.com/content/www/us/en/develop/articles/using-intel-mkl-in-your-c-program.html).
+
+Tests on sizes of power of 2. Transforms are ran 100000 times and the results are averaged out.
+
+The benchmark is carried out on i7-2640M CPU (benchmark code will be included soon).
 
 
 |Length | FFTSSharp     | MKL           |
