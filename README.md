@@ -1,5 +1,5 @@
 # FFTSSharp
-A basic C# wrapper for FFTS (The Fastest Fourier Transform in the South).
+A basic C# wrapper for [FFTS](https://github.com/anthonix/ffts) (The Fastest Fourier Transform in the South).
 
 The dynamically linked libraries (DLLs) used for the wrapper are custom built with CMake and should work normally for Windows users. The DLLs are included in the package and the folder "ffts-dlls" is to be put at the application's startup path.
 
@@ -27,6 +27,9 @@ The benchmark is carried out on i7-2640M CPU; SSE3 for FFTSSharp.
 | 8192  | 20423ns       | 45957ns       |
 | 16384 | 46817ns       | 89313ns       |
 | 32767 | 90406ns       | 188335ns      |
+
+## Setup
+
 
 ## Usage
 * Include the library
