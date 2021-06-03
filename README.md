@@ -12,7 +12,7 @@ The dynamically linked libraries (DLLs) used for the wrapper are custom built wi
 # Benchmark
 This is a benchmark comparing FFTSSharp against Intel's MKL C# implementation (https://software.intel.com/content/www/us/en/develop/articles/using-intel-mkl-in-your-c-program.html).
 
-Tests on sizes of power of 2. Transforms are ran 100000 times and the results are averaged out.
+Tests on sizes of power of 2 with complex-to-complex transforms. Transforms for each sizes are ran 100000 times and the results are averaged out.
 
 The benchmark is carried out on i7-2640M CPU; SSE3 for FFTSSharp.
 
