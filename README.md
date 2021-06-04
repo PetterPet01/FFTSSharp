@@ -17,19 +17,22 @@ Tests on sizes of power of 2 with complex-to-complex transforms. Transforms for 
 The benchmark is carried out on i7-2640M CPU; SSE3 for FFTSSharp.
 
 (Benchmark code will be included soon)
-|Length | FFTSSharp     | MKL           |
-|:-----:|:-------------:|:-------------:|
-| 256   | 356ns         | 376ns         |
-| 512   | 748ns         | 748ns         |
-| 1024  | 1551ns        | 1555ns        |
-| 2048  | 3949ns        | 12520ns       |
-| 4096  | 8342ns        | 22965ns       |
-| 8192  | 20423ns       | 45957ns       |
-| 16384 | 46817ns       | 89313ns       |
-| 32767 | 90406ns       | 188335ns      |
+| Length |   FFTS  |    MKL   |
+|:------:|:-------:|:--------:|
+|   256  |  356ns  |   376ns  |
+|   512  |  1551ns |  1555ns  |
+|  1024  |  1551ns |  1555ns  |
+|  2048  |  3949ns |  12520ns |
+|  4096  |  8342ns |  22965ns |
+|  8192  | 20423ns |  45957ns |
+|  16384 | 46817ns |  89313ns |
+|  32768 | 90406ns | 188335ns |
 
+## Target
+.NET Framework 4.5 and above\
+Target for .NET Framework 2.0 - 3.5 is still in development
 ## Setup
-
+## Install using Nuget
 
 ## Usage
 * Include the library
@@ -64,8 +67,8 @@ ffts.free();
 * For now, only 1D real and complex, forward and inverse tranforms are supported. FFTS support for 2D and above is insufficiently documented and is incomplete.
 
 ## Credits
-Much thanks to the author, [anthonix](https://github.com/anthonix) for creating FFTS with a very permissive license.\
-Thanks to DllImportX made available by [rodrigo-speller](https://github.com/rodrigo-speller).
+Much thanks to the author, [anthonix](https://github.com/anthonix) for creating [FFTS](https://github.com/anthonix/ffts) with a very permissive license.\
+Thanks to [DllImportX](https://github.com/rodrigo-speller/DllImportX) made available by [rodrigo-speller](https://github.com/rodrigo-speller).
 
 ## Thoughts
 Contributions and issue reports are welcomed.
