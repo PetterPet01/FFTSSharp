@@ -1,0 +1,51 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Version>0.0.1</Version>
+    <Authors>PetterPet</Authors>
+    <Description>A simple C# wrapper for FFTS (South)</Description>
+    <Copyright>Copyright © PetterPet 2021</Copyright>
+    <PackageLicenseFile>License.txt</PackageLicenseFile>
+    <RepositoryUrl>https://github.com/PetterPet01/FFTSSharp</RepositoryUrl>
+    <RepositoryType>Github</RepositoryType>
+    <PackageTags>FFT</PackageTags>
+    <PackageReleaseNotes>Initial release</PackageReleaseNotes>
+    <Platforms>AnyCPU;x64</Platforms>
+    <Product>FFTSSharp</Product>
+    <PackageId>PetterPet.FFTSSharp</PackageId>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<None Include="License.txt">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+		</None>
+		<None Include="DllImportX\DllImportX.csproj" />
+		<None Include="ffts-dlls\**">
+			<Pack>True</Pack>
+			<PackagePath>output\ffts-dlls\</PackagePath>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="System.Reflection.Emit" Version="4.3.0" />
+	</ItemGroup>
+
+</Project>
