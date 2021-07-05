@@ -16,6 +16,7 @@
     <PackageId>PetterPet.FFTSSharp</PackageId>
     <PackageIcon>logo.png</PackageIcon>
     <PackageIconUrl />
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
