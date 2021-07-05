@@ -19,23 +19,23 @@ Tests on sizes of power of 2 with complex-to-complex transforms. Transforms for 
 
 The benchmark is carried out on i7-2640M CPU; SSE3 for FFTSSharp.
 
-| Length |   FFTS  |    MKL   |
-|:------:|:-------:|:--------:|
-|   256  |  356ns  |   376ns  |
-|   512  |  1551ns |  1555ns  |
-|  1024  |  1551ns |  1555ns  |
-|  2048  |  3949ns |  12520ns |
-|  4096  |  8342ns |  22965ns |
-|  8192  | 20423ns |  45957ns |
-|  16384 | 46817ns |  89313ns |
-|  32768 | 90406ns | 188335ns |
+| Length |     FFTS |       MKL |
+|--------|---------:|----------:|
+| 256    |   356 ns |    376 ns |
+| 512    |  1551 ns |   1555 ns |
+| 1024   |   1551ns |   1555 ns |
+| 2048   |  3949 ns |  12520 ns |
+| 4096   |  8342 ns |  22965 ns |
+| 8192   | 20423 ns |  45957 ns |
+| 16384  | 46817 ns |  89313 ns |
+| 32768  | 90406 ns | 188335 ns |
 
 ## Target
 .NET Framework 4.5 (or .NET Standard 2.0) and above\
 For target of .NET Framework 2.0 - 3.5 please refer to [FFTSSharpLegacy](FFTSSharpLegacy)
 
 ## Get FFTSSharp
-For ease of installation, you can add the lastest release of FFTSSharp into your project using [Nuget]()
+For ease of installation, you can add the lastest release of FFTSSharp into your project using [Nuget](https://www.nuget.org/packages/PetterPet.FFTSSharp/)
 
 ## Usage
 * Include the library
