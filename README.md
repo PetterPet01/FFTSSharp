@@ -1,4 +1,4 @@
-![FFTSSharp Logo](https://github.com/PetterPet01/FFTSSharp/blob/main/logo.png?raw=true "FFTSSharp - Wrapper for FFTS")
+![FFTSSharp Logo](https://raw.githubusercontent.com/PetterPet01/FFTSSharp/main/logo.png "FFTSSharp - Wrapper for FFTS")
 
 A basic C# wrapper for [FFTS](https://github.com/anthonix/ffts) (The Fastest Fourier Transform in the South).
 
