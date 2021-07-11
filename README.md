@@ -40,7 +40,7 @@ For ease of installation, you can add the lastest release of FFTSSharp into your
 ## Usage
 * Include the library
 ```cs
-using FFTSSharp;
+using PetterPet.FFTSSharp;
 ```
 * Initial loading of FFTS DLLs
 ```cs
