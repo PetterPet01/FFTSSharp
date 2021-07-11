@@ -2,7 +2,7 @@
 
 A basic C# wrapper for [FFTS](https://github.com/anthonix/ffts) (The Fastest Fourier Transform in the South).
 
-FFTSSharp is [MIT](https://opensource.org/licenses/MIT) Licensed, so personal and commmercial use alike is allowed. For further details, see the [LICENSE](LICENSE) file.
+FFTSSharp is [MIT](https://opensource.org/licenses/MIT) licensed, so personal and commmercial use alike is allowed. For further details, see the [LICENSE](LICENSE) file.
 
 The dynamically linked libraries (DLLs) used for the wrapper are custom built with CMake and should work normally for Windows users. The DLLs are included in the package and the folder "ffts-dlls" is to be put at the application's startup path.
 
@@ -50,7 +50,7 @@ There consists of 4 enums in FFTSManager.InstructionType: nonSSE, SSE, SSE2, SSE
 (Choose "Auto" for generic loading)
 * Create an instance of FFTS (think of it like creating a plan)
 ```cs
-var ffts = FFTS.Real(FFTS.FORWARD, 16);
+var ffts = FFTS.Real(FFTS.Forward, 16);
 ```
 * Declare the input and output array (length of the input and output must be known beforehand)
 ```cs
@@ -61,9 +61,9 @@ float[] output = new float[18];
 ```cs
 ffts.Execute(input, output);
 ```
-* Free the plan
+* Dispose the plan after use
 ```cs
-ffts.Free();
+ffts.Dispose();
 ```
 
 ## Current problems
