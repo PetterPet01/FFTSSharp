@@ -264,7 +264,10 @@ namespace PetterPet.FFTSSharp
 			string bareMinimumPath = string.Format("{0}ffts-dlls\\ffts{1}nonsse.dll", applicationPath, architect);
 
 			if (dllFileName == "")
-				FFTSCaller = LoadLibrary(bareMinimumPath);
+				if (System.IO.File.Exists(bareMinimumPath))
+					FFTSCaller = LoadLibrary(bareMinimumPath);
+				else
+					throw CreateException("DLLs not found");
 			byte instructionsState = LastByte(FFTSCaller.SIMDSupport());
             bool[] sseSupport = new bool[3] { GetBit(instructionsState, 0),
 				GetBit(instructionsState, 1), GetBit(instructionsState, 2) };

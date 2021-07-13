@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <Version>0.0.1</Version>
     <Authors>PetterPet</Authors>
-    <Description>A simple C# wrapper for FFTS (South)</Description>
+    <Description>A basic C# wrapper for FFTS (The Fastest Fourier Transform in the South)</Description>
     <Copyright>Copyright © PetterPet 2021</Copyright>
     <PackageLicenseFile>License.txt</PackageLicenseFile>
     <RepositoryUrl>https://github.com/PetterPet01/FFTSSharp</RepositoryUrl>
@@ -44,6 +44,7 @@
 		<None Include="ffts-dlls\**">
 			<Pack>True</Pack>
 			<PackagePath>output\ffts-dlls\</PackagePath>
+			<PackageCopyToOutput>true</PackageCopyToOutput>
 		</None>
 		<None Include="logo.png">
 		  <Pack>True</Pack>
@@ -52,6 +53,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <PackageReference Include="Baseclass.Contrib.Nuget.Output" Version="2.4.3" />
 	  <PackageReference Include="System.Reflection.Emit" Version="4.3.0" />
 	</ItemGroup>
 

@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("FFTSSharpLegacy")]
-[assembly: AssemblyDescription("A simple C# wrapper for FFTS (South). This is a legacy version supporting .NET Framework 2.0 - 3.5")]
+[assembly: AssemblyDescription("A basic C# wrapper for FFTS (The Fastest Fourier Transform in the South). This is a legacy version supporting .NET Framework 2.0 - 3.5")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("PetterPet")]
 [assembly: AssemblyProduct("PetterPet.FFTSSharpLegacy")]
