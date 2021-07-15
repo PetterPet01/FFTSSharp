@@ -1,22 +1,28 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>0.0.1</Version>
+    <TargetFrameworks>
+		netstandard2.0;
+		netcoreapp2.0;
+		net40;
+		net46
+	</TargetFrameworks>
+    <Version>0.0.2</Version>
     <Authors>PetterPet</Authors>
     <Description>A basic C# wrapper for FFTS (The Fastest Fourier Transform in the South)</Description>
     <Copyright>Copyright © PetterPet 2021</Copyright>
     <PackageLicenseFile>License.txt</PackageLicenseFile>
     <RepositoryUrl>https://github.com/PetterPet01/FFTSSharp</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
-    <PackageTags>FFT</PackageTags>
-    <PackageReleaseNotes>Initial release</PackageReleaseNotes>
+    <PackageTags>Audio Wrapper CSharp DSP FFT FFT-library</PackageTags>
+    <PackageReleaseNotes>Compatibility update and bug fixes</PackageReleaseNotes>
     <Platforms>AnyCPU;x64</Platforms>
     <Product>FFTSSharp</Product>
     <PackageId>PetterPet.FFTSSharp</PackageId>
     <PackageIcon>logo.png</PackageIcon>
     <PackageIconUrl />
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -54,7 +60,6 @@
 
 	<ItemGroup>
 	  <PackageReference Include="Baseclass.Contrib.Nuget.Output" Version="2.4.3" />
-	  <PackageReference Include="System.Reflection.Emit" Version="4.3.0" />
+	  <PackageReference Include="System.Reflection.Emit" Version="4.3.0" Condition="'$(TargetFramework)' == 'netstandard2.0'" />
 	</ItemGroup>
-
 </Project>

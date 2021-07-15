@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Linq;
+using static PetterPet.FFTSSharp.BackwardsCompatibility;
 
 namespace System.Runtime.InteropServices
 {
@@ -23,7 +24,11 @@ namespace System.Runtime.InteropServices
         public static Type ImplementInterface(Type iface, DllImportXFilter filter)
         {
             var assemblyName = new AssemblyName("DllImportX");
+#if NETFRAMEWORK
             var assemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.Run);
+#else
+            var assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.Run);
+#endif
             var moduleBuilder = assemblyBuilder.DefineDynamicModule(assemblyName.Name);
             var typeBuilder = DeclareType(iface, moduleBuilder);
             var methods = GetMethods(iface, filter, out var otherMethods);
@@ -31,7 +36,11 @@ namespace System.Runtime.InteropServices
             DefineImportMethods(typeBuilder, methods);
             DefineNotImplementedMethods(typeBuilder, otherMethods);
 
+#if NETFRAMEWORK
             return typeBuilder.CreateType();
+#else
+            return typeBuilder.CreateTypeInfo().AsType();
+#endif
         }
 
         public static TypeBuilder DeclareType(Type iface, ModuleBuilder moduleBuilder)
@@ -46,8 +55,12 @@ namespace System.Runtime.InteropServices
 
         private static void ValidateInterface(Type type)
         {
+#if NETFRAMEWORK
             if (!type.IsInterface)
-            throw new InvalidOperationException(InvalidTypeExceptionMessage);
+#else
+            if (!type.GetTypeInfo().IsInterface)
+#endif
+                throw new InvalidOperationException(InvalidTypeExceptionMessage);
         }
 
         private static IEnumerable<DllImportXOptions> GetMethods(Type iface, DllImportXFilter filter, out IEnumerable<MethodInfo> others)
@@ -178,9 +191,13 @@ namespace System.Runtime.InteropServices
                 Action<TAttributes, Action<Type[], object[]>> builder)
                 where TAttributes : Attribute
         {
-        var ifaceAttr = (TAttributes)ifaceParam
+#if NETFRAMEWORK
+                var ifaceAttr = (TAttributes)ifaceParam
                     .GetCustomAttributes(typeof(TAttributes), false)
                     .FirstOrDefault();
+#else
+            var ifaceAttr = ifaceParam.GetCustomAttribute<TAttributes>();
+#endif
             if (ifaceAttr == null)
                 return;
 

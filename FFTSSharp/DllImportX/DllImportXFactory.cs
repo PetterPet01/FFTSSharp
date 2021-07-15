@@ -23,7 +23,7 @@ namespace System.Runtime.InteropServices
         public static Type ImplementInterface(Type iface, DllImportXFilter filter)
         {
             var assemblyName = new AssemblyName("DllImportX");
-#if NET35
+#if NETFRAMEWORK
             var assemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.Run);
 #else
             var assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.Run);
@@ -35,7 +35,7 @@ namespace System.Runtime.InteropServices
             DefineImportMethods(typeBuilder, methods);
             DefineNotImplementedMethods(typeBuilder, otherMethods);
 
-            return typeBuilder.CreateTypeInfo();
+            return typeBuilder.CreateType();
         }
 
         public static TypeBuilder DeclareType(Type iface, ModuleBuilder moduleBuilder)
@@ -50,11 +50,7 @@ namespace System.Runtime.InteropServices
 
         private static void ValidateInterface(Type type)
         {
-#if NET35
             if (!type.IsInterface)
-#else
-            if (!type.GetTypeInfo().IsInterface)
-#endif
                 throw new InvalidOperationException(InvalidTypeExceptionMessage);
         }
 
@@ -107,8 +103,8 @@ namespace System.Runtime.InteropServices
         public static MethodInfo DefinePInvokeMethod(TypeBuilder typeBuilder, DllImportXOptions options)
         {
             var clrImportType = typeof(DllImportAttribute);
+            
             var ctor = clrImportType.GetConstructor(new[] { typeof(string) });
-
             var fields = new[] {
                 clrImportType.GetField("EntryPoint"),
                 clrImportType.GetField("ExactSpelling"),
@@ -161,13 +157,13 @@ namespace System.Runtime.InteropServices
 
                 CopyAttributes<InAttribute>(ifaceParam, paramBuilder,
                     (x, build) => build(
-                        Type.EmptyTypes,
+                        new Type[0],
                         new object[0]
                     )
                 );
                 CopyAttributes<OutAttribute>(ifaceParam, paramBuilder,
                     (x, build) => build(
-                        Type.EmptyTypes,
+                        new Type[0],
                         new object[0]
                     )
                 );
@@ -186,7 +182,7 @@ namespace System.Runtime.InteropServices
                 Action<TAttributes, Action<Type[], object[]>> builder)
                 where TAttributes : Attribute
         {
-#if NET35
+#if NETFRAMEWORK
                 var ifaceAttr = (TAttributes)ifaceParam
                     .GetCustomAttributes(typeof(TAttributes), false)
                     .FirstOrDefault();
@@ -212,7 +208,7 @@ namespace System.Runtime.InteropServices
         private static void DefineNotImplementedMethods(TypeBuilder typeBuilder, IEnumerable<MethodInfo> otherMethods)
         {
             var clrExceptionType = typeof(NotImplementedException);
-            var ctor = clrExceptionType.GetConstructor(Type.EmptyTypes);
+            var ctor = clrExceptionType.GetConstructor(new Type[0]);
 
             foreach (var method in otherMethods)
             {

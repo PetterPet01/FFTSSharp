@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Security;
 using System.Runtime.InteropServices;
-using System.ComponentModel;
-using System.Reflection;
+using System.IO;
 namespace PetterPet.FFTSSharp
 {
 	using static FFTSManager;
@@ -178,17 +177,21 @@ namespace PetterPet.FFTSSharp
 				throw CreateException("Input or output size of the params' array is invalid.");
 			if (p == IntPtr.Zero)
 				throw CreateException("Plan uninitialized.");
-            unsafe
-            {
-				fixed (float* srcVoid = src)
-					Buffer.MemoryCopy(srcVoid, (void*)inPtr, inByteSize, srcLen * sizeof(float));
-                //Marshal.Copy(src, 0, inPtr, srcLen);
-                FFTSCaller.ffts_execute(p, inPtr, outPtr);
+#if NET40
+			Marshal.Copy(src, 0, inPtr, srcLen);
+			FFTSCaller.ffts_execute(p, inPtr, outPtr);
+			Marshal.Copy(outPtr, dst, 0, dstLen);
+#else
+			unsafe
+			{
+                fixed (float* srcVoid = src)
+                    Buffer.MemoryCopy(srcVoid, (void*)inPtr, inByteSize, srcLen * sizeof(float));
+                
                 fixed (float* dstVoid = dst)
-					Buffer.MemoryCopy((void*)outPtr, dstVoid, outByteSize, dstLen * sizeof(float));
-				//Marshal.Copy(outPtr, dst, 0, dstLen);
-			}
-		}
+                    Buffer.MemoryCopy((void*)outPtr, dstVoid, outByteSize, dstLen * sizeof(float));
+            }
+#endif
+        }
 
 		/**
 		 * Free the plan.
@@ -219,28 +222,22 @@ namespace PetterPet.FFTSSharp
 		static string dllFileName = "";
 		internal static FFTSNative FFTSCaller;
 		internal static bool loaded = false;
+
+		/*
+		 * 0 --- nonsse 
+		 * 1 --- sse
+		 * 2 --- sse2
+		 * 3 --- sse3
+		 * 4 --- auto
+		*/
+		static readonly string[] tagsEquivalent = new string[] { "nonsse", "sse", "sse2", "sse3" };
 		public enum InstructionType
 		{
-			[Description("nonsse")]
-			nonSSE,
-			[Description("sse")]
-			SSE,
-			[Description("sse2")]
-			SSE2,
-			[Description("sse3")]
-			SSE3,
-			Auto
-		}
-		static string GetEnumDescription(Enum value)
-		{
-			// Get the Description attribute value for the enum value
-			FieldInfo fi = value.GetType().GetField(value.ToString());
-			DescriptionAttribute[] attributes = (DescriptionAttribute[])fi.GetCustomAttributes(typeof(DescriptionAttribute), false);
-
-			if (attributes.Length > 0)
-				return attributes[0].Description;
-			else
-				return value.ToString();
+			nonSSE = 0,
+			SSE = 1,
+			SSE2 = 2,
+			SSE3 = 3,
+			Auto = 4
 		}
 		static byte LastByte(int number)
 		{
@@ -260,14 +257,12 @@ namespace PetterPet.FFTSSharp
 		public static void LoadAppropriateDll(InstructionType type = InstructionType.Auto)
 		{
 			if (FFTSCaller != null) return;
-			Console.WriteLine("loading");
+			//Console.WriteLine("loading");
 			string architect = IntPtr.Size == 8 ? "x64" : "x86";
-
-			string applicationPath = System.IO.Directory.GetCurrentDirectory() + "\\";
-			string bareMinimumPath = string.Format("{0}ffts-dlls\\ffts{1}nonsse.dll", applicationPath, architect);
+			string bareMinimumPath = string.Format("ffts-dlls\\ffts{0}nonsse.dll", architect);
 
 			if (dllFileName == "")
-				if (System.IO.File.Exists(bareMinimumPath))
+				if (File.Exists(bareMinimumPath))
 					FFTSCaller = LoadLibrary(bareMinimumPath);
 				else
 					throw CreateException("DLLs not found");
@@ -278,14 +273,15 @@ namespace PetterPet.FFTSSharp
 			foreach (bool b in sseSupport)
 				sse += b ? 1 : 0;
 			string inType = "";
-			if (type != InstructionType.Auto && sse >= (int)type)
-				inType = GetEnumDescription(type);
-			else if (type != InstructionType.Auto && sse < (int)type)
+			int typeIndex = (int)type;
+			if (type != InstructionType.Auto && sse >= typeIndex)
+				inType = tagsEquivalent[typeIndex];
+			else if (type != InstructionType.Auto && sse < typeIndex)
 				throw CreateException("Instruction type is unsupported.");
 			else
-				inType = GetEnumDescription((InstructionType)sse);
-			Console.WriteLine("Selected Instruction Type: " + inType);
-			dllFileName = string.Format("{0}ffts-dlls\\ffts{1}{2}.dll", applicationPath, architect, inType);
+				inType = tagsEquivalent[sse];
+			//Console.WriteLine("Selected Instruction Type: " + inType);
+			dllFileName = string.Format("ffts-dlls\\ffts{0}{1}.dll", architect, inType);
 			FFTSCaller = LoadLibrary(dllFileName);
 			loaded = true;
 		}
@@ -328,7 +324,6 @@ namespace PetterPet.FFTSSharp
 			return new FFTSException(message);
 		}
 	}
-	[Serializable]
 	internal class FFTSException : Exception
 	{
 		public FFTSException()
@@ -340,7 +335,8 @@ namespace PetterPet.FFTSSharp
 		{
 		}
 	}
-    [SuppressUnmanagedCodeSecurity]
+
+	[SuppressUnmanagedCodeSecurity]
     public interface FFTSNative
 	{
 		[DllImportX("ffts", CallingConvention = CallingConvention.Cdecl,

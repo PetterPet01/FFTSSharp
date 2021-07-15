@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
 
-#if NETSTANDARD1_5
+#if NETSTANDARD1_5_OR_GREATER
 
 namespace DllImportX
 {

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using mkl;
 using PetterPet.FFTSSharp;
 using System.Diagnostics;
@@ -113,16 +111,16 @@ namespace FFTBenchmark
                 float[] dataF = toFloatArray(data);
 
                 ffts = FFTS.Complex(FFTS.Forward, len / 2);
-                initDesc(len);
+                //initDesc(len);
 
                 double FFTSTime = testFFTS(dataF, testTimes);
-                double MKLTime = testMKL(data, testTimes);
+                //double MKLTime = testMKL(data, testTimes);
 
                 printResult(FFTSTime, testTimes, "FFTS");
-                printResult(MKLTime, testTimes, "MKL");
+                //printResult(MKLTime, testTimes, "MKL");
 
                 ffts.Dispose();
-                DFTI.DftiFreeDescriptor(ref descriptor);
+                //DFTI.DftiFreeDescriptor(ref descriptor);
 
             }
             Console.WriteLine("Benchmarking done!");
