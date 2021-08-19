@@ -30,36 +30,38 @@ namespace PetterPet.FFTSSharp
 			GC.SuppressFinalize(this);
 		}
 		#endregion
-		/**
-		 * C pointer
-		 */
+		// C pointer
 		private IntPtr p;
-		/**
-		 * Minimum size of input
-		 */
+
+		//Minimum size of input
+		/// <value>Minimum size of input</value>
 		public long inSize { get; private set; }
+
+		//Minimum size of input in bytes
 		long inByteSize;
-		/**
-		 * Minimum size of output
-		 */
+
+		//Minimum size of output
+		/// <value>Minimum size of output</value>
 		public long outSize { get; private set; }
+
+		//Minimum size of output in bytes
 		long outByteSize;
-		/*
-		 * Input pointer
-		 */
+
+		//Input pointer
 		IntPtr inPtr;
-		/*
-		 * Output pointer
-		 */
+
+		//Output pointer
 		IntPtr outPtr;
 
-		static void FatalIfNotLoaded()
+		//Checks if the unmanaged DLLs are loaded. If NOT, throws a FFTSException
+		static void ExceptionIfNotLoaded()
 		{
 			if (!FFTSManager.loaded)
 				throw CreateException("Native FFTS library not yet loaded." +
 					" Please call FFTSManager.LoadAppropriateDll() before any activities.");
 		}
 
+		//Private constructor, with only a [plan] pointer and [input size] as parameters
 		private FFTS(IntPtr p, long inSize)
 		{
 			this.p = p;
@@ -71,6 +73,10 @@ namespace PetterPet.FFTSSharp
 			outPtr = FFTSCaller.alMlc(inSize * sizeof(float), 32);
 		}
 
+		/*
+		 * Private constructor, with a [plan] pointer, [input size of the signal]
+		 * and [output size of the transformed signal] as parameters
+		*/
 		private FFTS(IntPtr p, long inSize, long outSize)
 		{
 			this.p = p;
@@ -81,61 +87,64 @@ namespace PetterPet.FFTSSharp
 			inPtr = FFTSCaller.alMlc(inSize * sizeof(float), 32);
 			outPtr = FFTSCaller.alMlc(outSize * sizeof(float), 32);
 		}
-		/**
-		 * The sign to use for a forward transform.
-		 */
+
+		//The sign to use for a forward transform.
+		/// <value>The constant used in transform functions to indicate Forward transformation </value>
 		public static readonly int Forward = -1;
-		/**
-		 * The sign to use for a backward transform.
-		 */
+		//The sign to use for a backward transform.
+		/// <value>The constant used in transform functions to indicate Backward transformation </value>
 		public static readonly int Backward = 1;
 
-		/**
-		 * Create a FFT plan for a 1-dimensional complex transform.
-		 *
-		 * The src and dst parameters to execute() use complex data.
-		 *
-		 * @param sign The direction of the transform.
-		 * @param N The size of the transform.
-		 * @return
-		 */
+		/// <summary>
+		/// Create a FFT plan for a 1-dimensional complex transform.
+		/// </summary>
+		/// <param name = "sign" > The direction of the transform.</param>
+		/// <param name = "N" > The size of the transform.</param>
 		public static FFTS Complex(int sign, int N)
 		{
-			FatalIfNotLoaded();
+			ExceptionIfNotLoaded();
 			IntPtr plan = FFTSCaller.ffts_init_1d(N, sign);
 			if (plan == IntPtr.Zero)
 				throw CreateException("Invalid plan initilized.");
 			return new FFTS(plan, N * 2);
 		}
 
-		/**
-		 * Create a FFT plan for a 2-dimensional complex transform.
-		 * @param sign The direction of the transform.
-		 * @param N1 The size of the transform.
-		 * @param N2 The size of the transform.
-		 * @return
-		 */
+		/// <summary>
+		/// Create a FFT plan for a 2-dimensional complex transform.
+		/// </summary>
+		/// <param name = "sign" > The direction of the transform.</param>
+		/// <param name = "N1" > The 1st dimension size of the transform.</param>
+		/// <param name = "N2" > The 2nd dimension size of the transform.</param>
 		public static FFTS Complex(int sign, int N1, int N2)
 		{
-			FatalIfNotLoaded();
+			ExceptionIfNotLoaded();
 			IntPtr plan = FFTSCaller.ffts_init_2d(N1, N2, sign);
 			if (plan == IntPtr.Zero)
 				throw CreateException("Invalid plan initilized.");
 			return new FFTS(plan, N1 * N2 * 2);
 		}
 
+		/// <summary>
+		/// Create a FFT plan for a N-dimensional complex transform.
+		/// </summary>
+		/// <param name = "sign" > The direction of the transform.</param>
+		/// <param name = "Ns" > N dimension(s) sizes of the transform.</param>
 		public static FFTS Complex(int sign, params int[] Ns)
 		{
-			FatalIfNotLoaded();
+			ExceptionIfNotLoaded();
 			IntPtr plan = FFTSCaller.ffts_init_nd(Ns.Length, Ns, sign);
 			if (plan == IntPtr.Zero)
 				throw CreateException("Invalid plan initilized.");
 			return new FFTS(plan, Size(Ns) * 2);
 		}
 
+		/// Create a FFT plan for a 1-dimensional real transform.
+		/// </summary>
+		/// <param name = "sign" > The direction of the transform.</param>
+		/// <param name = "N" > The size of the transform.</param>
 		public static FFTS Real(int sign, int N)
 		{
-			FatalIfNotLoaded();
+			ExceptionIfNotLoaded();
 			IntPtr plan = FFTSCaller.ffts_init_1d_real(N, sign);
 			if (plan == IntPtr.Zero)
 				throw CreateException("Invalid plan initilized.");
@@ -143,9 +152,15 @@ namespace PetterPet.FFTSSharp
 			return new FFTS(plan, sign == Forward ? N : outSize, sign == Forward ? outSize : N);
 		}
 
+		/// <summary>
+		/// Create a FFT plan for a 2-dimensional real transform.
+		/// </summary>
+		/// <param name = "sign" > The direction of the transform.</param>
+		/// <param name = "N1" > The 1st dimension size of the transform.</param>
+		/// <param name = "N2" > The 2nd dimension size of the transform.</param>
 		public static FFTS Real(int sign, int N1, int N2)
 		{
-			FatalIfNotLoaded();
+			ExceptionIfNotLoaded();
 			IntPtr plan = FFTSCaller.ffts_init_2d_real(N1, N2, sign);
 			if (plan == IntPtr.Zero)
 				throw CreateException("Invalid plan initilized.");
@@ -153,9 +168,14 @@ namespace PetterPet.FFTSSharp
 			return new FFTS(plan, sign == Forward ? N1 * N2 : outSize, sign == Forward ? outSize : N1 * N2);
 		}
 
+		/// <summary>
+		/// Create a FFT plan for a N-dimensional complex transform.
+		/// </summary>
+		/// <param name = "sign" > The direction of the transform.</param>
+		/// <param name = "Ns" > N dimension(s) sizes of the transform.</param>
 		public static FFTS Real(int sign, params int[] Ns)
 		{
-			FatalIfNotLoaded();
+			ExceptionIfNotLoaded();
 			IntPtr plan = FFTSCaller.ffts_init_nd_real(Ns.Length, Ns, sign);
 			if (plan == IntPtr.Zero)
 				throw CreateException("Invalid plan initilized.");
@@ -163,12 +183,12 @@ namespace PetterPet.FFTSSharp
 			return new FFTS(plan, sign == Forward ? Size(Ns) : outSize, sign == Forward ? outSize : Size(Ns));
 		}
 
-		/**
-		 * Execute this plan with the given array data.
-		 *
-		 * @param src
-		 * @param dst
-		 */
+		/// <summary>
+		/// Execute this plan with the given array data.
+		/// </summary>
+		/// <param name = "src" > The buffer containing the input signal.</param>
+		/// <param name = "dst" > The buffer with the appropriate size which will
+		/// contain the output transform.</param>
 		public void Execute(float[] src, float[] dst)
 		{
 			int srcLen = src.Length;
@@ -193,9 +213,7 @@ namespace PetterPet.FFTSSharp
 #endif
         }
 
-		/**
-		 * Free the plan.
-		 */
+		//Free the plan.
 		private void Free()
 		{
 			if (p == IntPtr.Zero)
@@ -392,12 +410,12 @@ namespace PetterPet.FFTSSharp
 		//7, avxSupportted)
 		int SIMDSupport();
 
-		[DllImportX("ffts", CallingConvention = CallingConvention.Cdecl,
-			 ExactSpelling = true, SetLastError = false)]
-		void sse_cmul(IntPtr in1, IntPtr in2, IntPtr output);
+		//[DllImportX("ffts", CallingConvention = CallingConvention.Cdecl,
+		//	 ExactSpelling = true, SetLastError = false)]
+		//void sse_cmul(IntPtr in1, IntPtr in2, IntPtr output);
 
-		[DllImportX("ffts", CallingConvention = CallingConvention.Cdecl,
-			 ExactSpelling = true, SetLastError = false)]
-		void sse_bulk_cmul(IntPtr in1, IntPtr in2, IntPtr output, int start, int end);
+		//[DllImportX("ffts", CallingConvention = CallingConvention.Cdecl,
+		//	 ExactSpelling = true, SetLastError = false)]
+		//void sse_bulk_cmul(IntPtr in1, IntPtr in2, IntPtr output, int start, int end);
 	}
 }
