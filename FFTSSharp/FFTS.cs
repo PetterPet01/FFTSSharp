@@ -69,8 +69,8 @@ namespace PetterPet.FFTSSharp
 			this.inByteSize = AlignedSize(inSize) * sizeof(float);
 			this.outSize = inSize;
 			this.outByteSize = AlignedSize(inSize) * sizeof(float);
-			inPtr = FFTSCaller.alMlc(inSize * sizeof(float), 32);
-			outPtr = FFTSCaller.alMlc(inSize * sizeof(float), 32);
+			inPtr = FFTSCaller.alMlc((int)(inSize * sizeof(float)), 32);
+			outPtr = FFTSCaller.alMlc((int)(inSize * sizeof(float)), 32);
 		}
 
 		/*
@@ -84,8 +84,8 @@ namespace PetterPet.FFTSSharp
 			this.inByteSize = AlignedSize(inSize) * sizeof(float);
 			this.outSize = outSize;
 			this.outByteSize = AlignedSize(outSize) * sizeof(float);
-			inPtr = FFTSCaller.alMlc(inSize * sizeof(float), 32);
-			outPtr = FFTSCaller.alMlc(outSize * sizeof(float), 32);
+			inPtr = FFTSCaller.alMlc((int)(inSize * sizeof(float)), 32);
+			outPtr = FFTSCaller.alMlc((int)(outSize * sizeof(float)), 32);
 		}
 
 		//The sign to use for a forward transform.
@@ -204,14 +204,14 @@ namespace PetterPet.FFTSSharp
 #else
 			unsafe
 			{
-                fixed (float* srcVoid = src)
-                    Buffer.MemoryCopy(srcVoid, (void*)inPtr, inByteSize, srcLen * sizeof(float));
-                
-                fixed (float* dstVoid = dst)
-                    Buffer.MemoryCopy((void*)outPtr, dstVoid, outByteSize, dstLen * sizeof(float));
-            }
+				fixed (float* srcVoid = src)
+					Buffer.MemoryCopy(srcVoid, (void*)inPtr, inByteSize, inSize * sizeof(float));
+				FFTSCaller.ffts_execute(p, inPtr, outPtr);
+				fixed (float* dstVoid = dst)
+					Buffer.MemoryCopy((void*)outPtr, dstVoid, outByteSize, outSize * sizeof(float));
+			}
 #endif
-        }
+		}
 
 		//Free the plan.
 		private void Free()
@@ -276,20 +276,25 @@ namespace PetterPet.FFTSSharp
 		{
 			if (FFTSCaller != null) return;
 			//Console.WriteLine("loading");
-			string architect = IntPtr.Size == 8 ? "x64" : "x86";
+			string architect = Environment.Is64BitProcess ? "x64" : "x86";
+			Console.WriteLine(architect);
+			if (loaded) goto LoadLib;
 			string bareMinimumPath = string.Format("ffts-dlls\\ffts{0}nonsse.dll", architect);
+			Console.WriteLine(bareMinimumPath);
 
 			if (dllFileName == "")
 				if (File.Exists(bareMinimumPath))
 					FFTSCaller = LoadLibrary(bareMinimumPath);
 				else
 					throw CreateException("DLLs not found");
+				LoadLib:
 			byte instructionsState = LastByte(FFTSCaller.SIMDSupport());
 			bool[] sseSupport = new bool[3] { GetBit(instructionsState, 0),
 				GetBit(instructionsState, 1), GetBit(instructionsState, 2) };
 			int sse = 0;
 			foreach (bool b in sseSupport)
 				sse += b ? 1 : 0;
+			Console.WriteLine(sse);
 			string inType = "";
 			int typeIndex = (int)type;
 			if (type != InstructionType.Auto && sse >= typeIndex)
@@ -300,6 +305,7 @@ namespace PetterPet.FFTSSharp
 				inType = tagsEquivalent[sse];
 			//Console.WriteLine("Selected Instruction Type: " + inType);
 			dllFileName = string.Format("ffts-dlls\\ffts{0}{1}.dll", architect, inType);
+			Console.WriteLine(dllFileName);
 			FFTSCaller = LoadLibrary(dllFileName);
 			loaded = true;
 		}
@@ -320,7 +326,7 @@ namespace PetterPet.FFTSSharp
 		{
 			int size = fA.Length;
 			float[] returnfA = new float[AlignedSize(size)];
-			Buffer.BlockCopy(fA, 0, returnfA, 0, size);
+			Buffer.BlockCopy(fA, 0, returnfA, 0, size * sizeof(float));
 			return returnfA;
 		}
 		internal static int OutSize(params int[] inSize)
@@ -355,7 +361,7 @@ namespace PetterPet.FFTSSharp
 	}
 
 	[SuppressUnmanagedCodeSecurity]
-    public interface FFTSNative
+	public interface FFTSNative
 	{
 		[DllImportX("ffts", CallingConvention = CallingConvention.Cdecl,
 			 ExactSpelling = true, SetLastError = false)]
@@ -389,10 +395,10 @@ namespace PetterPet.FFTSSharp
 			 ExactSpelling = true, SetLastError = false)]
 		void ffts_free(IntPtr p);
 
+		/*Added Support For C# Work*/
 		[DllImportX("ffts", CallingConvention = CallingConvention.Cdecl,
 			 ExactSpelling = true, SetLastError = false)]
-		/*Added Support For C# Work*/
-		IntPtr alMlc(long size, int alignment);
+		IntPtr alMlc(int size, int alignment);
 
 		[DllImportX("ffts", CallingConvention = CallingConvention.Cdecl,
 			 ExactSpelling = true, SetLastError = false)]
